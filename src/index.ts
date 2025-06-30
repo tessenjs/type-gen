@@ -210,11 +210,11 @@ function generateTessenDeclaration(tessen: Tessen, clientIndex?: number): string
   const clientSuffix = clientIndex !== undefined ? ` // Client ${clientIndex + 1}` : '';
 
   return `declare global {${clientSuffix}
-    namespace Tessen {
-        interface Localization {
+  namespace Tessen {
+    interface Localization {
 ${interfaceContent}
-        }
     }
+  }
 }
     
 export { };`;
