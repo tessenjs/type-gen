@@ -121,23 +121,15 @@ function extractPlainLocaleDataFromTessen(tessen: Tessen): PlainLocaleData {
     // Access the private 'contents' field which contains the raw template strings
     // locale.content contains processed functions, but we need the original templates
     const localeAsAny = locale as any;
-    const rawContents = localeAsAny.contents; // This should be the private contents field
+    const rawContents = localeAsAny.contents; // Collection<string, { language: Language; data: PlainLocaleData }>
     
     if (rawContents && typeof rawContents === 'object') {
-      // Process the raw contents which should contain the original template strings
-      for (const [language, languageContents] of Object.entries(rawContents)) {
-        if (languageContents && typeof languageContents === 'object') {
-          // Merge all content sources for this language
-          for (const [contentId, contentData] of Object.entries(languageContents as any)) {
-            if (contentData && typeof contentData === 'object') {
-              const plainData = extractPlainDataFromContentValue(contentData);
-              if (typeof plainData === 'object' && plainData !== null) {
-                deepMerge(mergedData, plainData);
-              }
-            }
-          }
+      // rawContents is a Collection, iterate through it
+      for (const [contentId, contentEntry] of rawContents) {
+        if (contentEntry && contentEntry.data) {
+          // contentEntry.data contains the PlainLocaleData with original template strings
+          deepMerge(mergedData, contentEntry.data);
         }
-        break; // Use first language as the structural template
       }
     } else {
       // Fallback to the old method if private field access doesn't work
