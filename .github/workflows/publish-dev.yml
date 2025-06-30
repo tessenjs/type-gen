@@ -2,9 +2,9 @@
 name: Publish Dev
 on:
   push:
-    branches: [ai/base]
+    branches: [main]
 
-    
+
 permissions:
   contents: write
 
