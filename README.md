@@ -59,7 +59,13 @@ const types = generateLocalizationTypes(config);
 ```typescript
 import { writeLocalizationTypes } from '@tessen/type-gen';
 
-await writeLocalizationTypes(config, './types/localization.d.ts');
+// Option 1: Use default output path (process.cwd()/localization.d.ts)
+const config = createTypeGenerationConfig(tessen);
+await writeLocalizationTypes(config);
+
+// Option 2: Specify custom output path in config
+const configWithPath = createTypeGenerationConfig(tessen, './types/localization.d.ts');
+await writeLocalizationTypes(configWithPath);
 ```
 
 ## Parameter Detection Examples
@@ -144,22 +150,22 @@ Generates TypeScript declaration strings from Tessen instances.
 
 **Returns:** Generated TypeScript declaration string
 
-### `createTypeGenerationConfig(tessens: Tessen | Tessen[]): TypeGenerationConfig`
+### `createTypeGenerationConfig(tessens: Tessen | Tessen[], outputPath?: string): TypeGenerationConfig`
 
 Creates a configuration object for type generation.
 
 **Parameters:**
 - `tessens`: Single Tessen instance or array of instances
+- `outputPath`: Optional custom output path (defaults to `process.cwd()/localization.d.ts`)
 
 **Returns:** Configuration object
 
-### `writeLocalizationTypes(config: TypeGenerationConfig, outputPath: string): Promise<void>`
+### `writeLocalizationTypes(config: TypeGenerationConfig): Promise<void>`
 
-Writes generated types to a file.
+Writes generated types to a file using the output path from the configuration.
 
 **Parameters:**
-- `config`: Configuration object
-- `outputPath`: Path where the TypeScript declaration file should be written
+- `config`: Configuration object (containing tessens and optional outputPath)
 
 ## Types
 

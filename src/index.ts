@@ -224,17 +224,24 @@ export function generateLocalizationTypes(config: TypeGenerationConfig): string 
 /**
  * Utility function to create a type generation configuration
  */
-export function createTypeGenerationConfig(tessens: Tessen | Tessen[]): TypeGenerationConfig {
+export function createTypeGenerationConfig(
+  tessens: Tessen | Tessen[], 
+  outputPath?: string
+): TypeGenerationConfig {
   return {
-    tessens: Array.isArray(tessens) ? tessens : [tessens]
+    tessens: Array.isArray(tessens) ? tessens : [tessens],
+    outputPath
   };
 }
 
 /**
  * Helper function to write generated types to a file (Node.js environment)
  */
-export async function writeLocalizationTypes(config: TypeGenerationConfig, outputPath: string): Promise<void> {
+export async function writeLocalizationTypes(config: TypeGenerationConfig): Promise<void> {
   const { writeFile } = await import('fs/promises');
+  const { join } = await import('path');
+  
+  const outputPath = config.outputPath || join(process.cwd(), 'localization.d.ts');
   const generatedTypes = generateLocalizationTypes(config);
   await writeFile(outputPath, generatedTypes, 'utf-8');
 }
