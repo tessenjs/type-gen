@@ -118,14 +118,36 @@ function extractPlainLocaleDataFromTessen(tessen: Tessen): PlainLocaleData {
   for (const [localeId, cacheData] of tessen.cache.locales) {
     const locale = cacheData.data;
     
-    // Get content from the first available language
-    // We use the first language as the structure template
-    for (const [language, contentValue] of locale.content) {
-      const plainData = extractPlainDataFromContentValue(contentValue);
-      if (typeof plainData === 'object' && plainData !== null) {
-        deepMerge(mergedData, plainData);
+    // Access the private 'contents' field which contains the raw template strings
+    // locale.content contains processed functions, but we need the original templates
+    const localeAsAny = locale as any;
+    const rawContents = localeAsAny.contents; // This should be the private contents field
+    
+    if (rawContents && typeof rawContents === 'object') {
+      // Process the raw contents which should contain the original template strings
+      for (const [language, languageContents] of Object.entries(rawContents)) {
+        if (languageContents && typeof languageContents === 'object') {
+          // Merge all content sources for this language
+          for (const [contentId, contentData] of Object.entries(languageContents as any)) {
+            if (contentData && typeof contentData === 'object') {
+              const plainData = extractPlainDataFromContentValue(contentData);
+              if (typeof plainData === 'object' && plainData !== null) {
+                deepMerge(mergedData, plainData);
+              }
+            }
+          }
+        }
+        break; // Use first language as the structural template
       }
-      break; // Use first language as the structural template
+    } else {
+      // Fallback to the old method if private field access doesn't work
+      for (const [language, contentValue] of locale.content) {
+        const plainData = extractPlainDataFromContentValue(contentValue);
+        if (typeof plainData === 'object' && plainData !== null) {
+          deepMerge(mergedData, plainData);
+        }
+        break;
+      }
     }
   }
 
