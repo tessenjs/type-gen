@@ -20,6 +20,7 @@ interface TypeGenerationConfig {
  */
 function extractParameters(value: string): ExtractedParameter[] {
   const parameters: ExtractedParameter[] = [];
+  const seen = new Set<string>(); // Track parameter names we've already seen
   const paramRegex = /\{(\d+)(?::([^}]+))?\}/g;
   let match;
 
@@ -27,22 +28,19 @@ function extractParameters(value: string): ExtractedParameter[] {
     const index = match[1];
     const paramName = match[2] || `_${index}`;
     
-    parameters.push({
-      name: paramName,
-      type: 'string' // For now, we assume all parameters are strings
-    });
+    // Only add if we haven't seen this parameter name before
+    if (!seen.has(paramName)) {
+      seen.add(paramName);
+      parameters.push({
+        name: paramName,
+        type: 'string' // For now, we assume all parameters are strings
+      });
+    }
   }
 
-  return parameters.sort((a, b) => {
-    // Sort by index if using default naming (_0, _1, etc.)
-    if (a.name.startsWith('_') && b.name.startsWith('_')) {
-      const aIndex = parseInt(a.name.substring(1));
-      const bIndex = parseInt(b.name.substring(1));
-      return aIndex - bIndex;
-    }
-    // Otherwise, maintain original order
-    return 0;
-  });
+  // Don't sort - maintain the order parameters appear in the string
+  // This ensures the function signature matches the parameter order in the template
+  return parameters;
 }
 
 /**
@@ -203,7 +201,9 @@ function generateTessenDeclaration(tessen: Tessen, clientIndex?: number): string
 ${interfaceContent}
         }
     }
-}`;
+}
+    
+export { };`;
 }
 
 /**
