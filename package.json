@@ -1,0 +1,21 @@
+{
+  "name": "@tessen/type-gen",
+  "version": "0.0.2-dev.1",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "Kıraç Armağan Önal & Erdem Göksel",
+  "license": "LGPL-3.0-or-later",
+  "packageManager": "pnpm@10.7.1",
+  "devDependencies": {
+    "@types/node": "^22.15.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "tessen": "0.0.2-dev.10"
+  }
+}
