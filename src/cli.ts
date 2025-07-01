@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import { existsSync, writeFileSync } from 'fs';
+import { existsSync, writeFileSync, mkdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { Command } from 'commander';
 import { watch } from 'chokidar';
-import { generateLocalizationTypes, createTypeGenerationConfig } from './index.js';
+import { generateLocalizationTypes, createTypeGenerationConfig } from './index';
 
 const program = new Command();
 
@@ -12,25 +12,9 @@ const program = new Command();
 const moduleCache = new Set<string>();
 
 function clearModuleCache() {
-  // Clear ES module cache by deleting from import.meta.resolve cache
-  // Note: This is a best-effort approach as ES modules don't have a direct cache clearing mechanism
-  for (const modulePath of moduleCache) {
-    try {
-      // For Node.js versions that support it, we can try to invalidate the cache
-      if (typeof process !== 'undefined' && process.versions && process.versions.node) {
-        // Clear from require cache if available (for CommonJS interop)
-        delete require.cache[modulePath];
-        
-        // Also try to clear any registered modules
-        const Module = require('module');
-        if (Module._cache) {
-          delete Module._cache[modulePath];
-        }
-      }
-    } catch (error) {
-      // Silently ignore cache clearing errors
-    }
-  }
+  // Clear ES module cache by clearing the cache set
+  // Note: ES modules don't have a direct cache clearing mechanism like CommonJS
+  // We rely on cache busting with timestamps for fresh imports
   moduleCache.clear();
 }
 
@@ -134,9 +118,8 @@ async function loadTessenInstances(importPath: string): Promise<any[]> {
 function ensureDirectoryExists(filePath: string) {
   const dir = dirname(filePath);
   try {
-    const fs = require('fs');
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    if (!existsSync(dir)) {
+      mkdirSync(dir, { recursive: true });
     }
   } catch (error) {
     console.error(`Error creating directory ${dir}:`, error);
