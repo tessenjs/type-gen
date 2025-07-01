@@ -17,6 +17,6 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "tessen": "0.0.2-dev.14"
+    "tessen": "0.0.2-dev.15"
   }
 }
