@@ -8,15 +8,9 @@ importers:
 
   .:
     dependencies:
-      chokidar:
-        specifier: ^4.0.3
-        version: 4.0.3
-      commander:
-        specifier: ^14.0.0
-        version: 14.0.0
       tessen:
-        specifier: 0.0.2-dev.13
-        version: 0.0.2-dev.13
+        specifier: 0.0.2-dev.10
+        version: 0.0.2-dev.10
     devDependencies:
       '@types/node':
         specifier: ^22.15.2
@@ -81,17 +75,9 @@ packages:
     resolution: {integrity: sha512-RaI5qZo6D2CVS6sTHFKg1v5Ohq/+Bo2LZ5gzUEwZ/WkHhwtGTCB/sVLw8ijOkAUxasZ+WshN/Rzj4ywsABJ5ZA==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
 
-  chokidar@4.0.3:
-    resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
-    engines: {node: '>= 14.16.0'}
-
   color-support@1.1.3:
     resolution: {integrity: sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==}
     hasBin: true
-
-  commander@14.0.0:
-    resolution: {integrity: sha512-2uM9rYjPvyq39NwLRqaiLtWHyDC1FvryJDa2ATTVims5YAS4PupsEQsDvP14FqhFr0P49CYDugi59xaxJlTXRA==}
-    engines: {node: '>=20'}
 
   discord-api-types@0.38.13:
     resolution: {integrity: sha512-FELWJRgLVQuR7Az8RhdEZE0k6QNjSW9PCUcU1iyP2Gke8HrJmnMceSS9pD93UM64s3tvZzJPajpPLjWZJylf4g==}
@@ -116,15 +102,11 @@ packages:
   magic-bytes.js@1.12.1:
     resolution: {integrity: sha512-ThQLOhN86ZkJ7qemtVRGYM+gRgR8GEXNli9H/PMvpnZsE44Xfh3wx9kGJaldg314v85m+bFW6WBMaVHJc/c3zA==}
 
-  readdirp@4.1.2:
-    resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
-    engines: {node: '>= 14.18.0'}
-
   stuffs@0.1.43:
     resolution: {integrity: sha512-oZAsoeQijWdeh5+PeQq7EF0BuG33WxEF2tf9S9hwJRIZWsihBo2GkDvXfi/T0Ap5VQPZDRmkzpcBMrumcD8YkQ==}
 
-  tessen@0.0.2-dev.13:
-    resolution: {integrity: sha512-VXBMgjt8BortfYrPidO0UDtjLip8F8ATk3ATwkB5007mLcp+Y4G5P7JmC2/jIiy7Tpssu1ocM4nmQPNqXw42rA==}
+  tessen@0.0.2-dev.10:
+    resolution: {integrity: sha512-HSQV43l8h/pWKZQLPgq/6jVNrPjdLPEXohgBKU4jeS1O+7ABB2fWxbKVE1PuobJI+kMcNSdQNN4eVbCtIMhkIg==}
 
   ts-mixer@6.0.4:
     resolution: {integrity: sha512-ufKpbmrugz5Aou4wcr5Wc1UUFWOLhq+Fm6qa6P0w0K5Qw2yhaUoiWszhCVuNQyNwrlGiscHOmqYoAox1PtvgjA==}
@@ -231,13 +213,7 @@ snapshots:
 
   '@vladfrangu/async_event_emitter@2.4.6': {}
 
-  chokidar@4.0.3:
-    dependencies:
-      readdirp: 4.1.2
-
   color-support@1.1.3: {}
-
-  commander@14.0.0: {}
 
   discord-api-types@0.38.13: {}
 
@@ -270,11 +246,9 @@ snapshots:
 
   magic-bytes.js@1.12.1: {}
 
-  readdirp@4.1.2: {}
-
   stuffs@0.1.43: {}
 
-  tessen@0.0.2-dev.13:
+  tessen@0.0.2-dev.10:
     dependencies:
       '@discordjs/rest': 2.5.1
       color-support: 1.1.3
