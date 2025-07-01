@@ -1,6 +1,6 @@
 {
   "name": "@tessen/type-gen",
-  "version": "0.0.2-dev.10",
+  "version": "0.0.2-dev.11",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
