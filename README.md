@@ -22,7 +22,73 @@ yarn add @tessen/type-gen
 
 ## Usage
 
-### Basic Usage
+### CLI Usage (npx/Deno)
+
+The module supports CLI usage for easy integration into build processes and development workflows. It works with both Node.js (via npx) and Deno (via npm: specifier).
+
+#### Basic CLI Usage
+
+Generate types once:
+```bash
+# Using npx (Node.js)
+npx @tessen/type-gen --tessenImport ./src/tessen.ts
+
+# Using Deno
+deno run --allow-read --allow-write npm:@tessen/type-gen --tessenImport ./src/tessen.ts
+```
+
+Watch for changes and regenerate automatically:
+```bash
+# Using npx (Node.js)
+npx @tessen/type-gen --tessenImport ./src/tessen.ts --watch
+
+# Using Deno
+deno run --allow-read --allow-write npm:@tessen/type-gen --tessenImport ./src/tessen.ts --watch
+```
+
+#### CLI Options
+
+- `--tessenImport <path>` (required): Path to import Tessen instances from
+- `--out <path>`: Output path for generated types (default: `./src/locales.d.ts`)
+- `--listenPath <path>`: Path to watch for changes (default: `./src/i18n`)
+- `--watch, -w`: Watch for file changes and regenerate types automatically
+
+#### CLI Examples
+
+```bash
+# Basic usage with default output (Node.js)
+npx @tessen/type-gen --tessenImport ./src/tessen.ts
+
+# Basic usage with default output (Deno)
+deno run --allow-read --allow-write npm:@tessen/type-gen --tessenImport ./src/tessen.ts
+
+# Custom output path (Node.js)
+npx @tessen/type-gen --tessenImport ./src/tessen.ts --out ./types/locales.d.ts
+
+# Custom output path (Deno)
+deno run --allow-read --allow-write npm:@tessen/type-gen --tessenImport ./src/tessen.ts --out ./types/locales.d.ts
+
+# Watch mode with custom listen path (Node.js)
+npx @tessen/type-gen --tessenImport ./src/tessen.ts --watch --listenPath ./locales
+
+# Watch mode with custom listen path (Deno)
+deno run --allow-read --allow-write npm:@tessen/type-gen --tessenImport ./src/tessen.ts --watch --listenPath ./locales
+
+# All options combined (Node.js)
+npx @tessen/type-gen --listenPath ./src/i18n --out ./src/locales.d.ts --tessenImport ./src/tessen.ts --watch
+
+# All options combined (Deno)
+deno run --allow-read --allow-write npm:@tessen/type-gen --listenPath ./src/i18n --out ./src/locales.d.ts --tessenImport ./src/tessen.ts --watch
+```
+
+The CLI automatically:
+- 🔍 **Detects Tessen instances** by constructor name from any export in the target file
+- 🔄 **Clears module cache** when regenerating in watch mode for fresh imports
+- ⚡ **Debounces file changes** to avoid excessive regeneration
+- 🎯 **Supports both ESM and CommonJS** module formats
+- 🦕 **Works with Deno** using npm: specifier (requires `--allow-read` and `--allow-write` permissions)
+
+### Programmatic Usage
 
 ```typescript
 import { generateLocalizationTypes, createTypeGenerationConfig } from '@tessen/type-gen';

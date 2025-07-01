@@ -1,12 +1,17 @@
 {
   "name": "@tessen/type-gen",
   "version": "0.0.2-dev.9",
-  "description": "",
+  "description": "TypeScript type generator for Tessen localization",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
+  "bin": {
+    "tessen-type-gen": "src/cli.ts"
+  },
   "private": false,
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [],
   "author": "Kıraç Armağan Önal & Erdem Göksel",
@@ -17,6 +22,8 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "chokidar": "^4.0.3",
+    "commander": "^14.0.0",
     "tessen": "0.0.2-dev.13"
   }
 }
