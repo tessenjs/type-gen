@@ -54,4 +54,33 @@ declare global {
         }
     }
 }
+
+export {};
+```
+
+### TODO
+tessen has support for component type generation, so we should also generate types for components.
+add function writeComponentTypes.
+
+Tessen#cache has a property called `interactions` which is a Collection<string, CacheData<Interaction>>()
+
+export type CacheData<T> = {
+  path: string[];
+  data: T;
+}
+
+example output:
+
+```ts
+declare global {
+  namespace Tessen {
+    interface ComponentMap {
+      'my-button': 'Button';
+      'my-select': 'StringSelectMenu';
+      'my-modal': 'Modal';
+    }
+  }
+}
+
+export {};
 ```

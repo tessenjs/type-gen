@@ -12,6 +12,17 @@ interface TypeGenerationConfig {
   outputPath?: string;
 }
 
+// Configuration for component type generation
+interface ComponentTypeGenerationConfig {
+  tessens: Tessen[];
+  outputPath?: string;
+}
+
+// Interface for component mapping
+interface ComponentMapping {
+  [customId: string]: string;
+}
+
 /**
  * Extracts parameter information from a localized string
  * Examples:
@@ -221,6 +232,80 @@ export { };`;
 }
 
 /**
+ * Maps interaction types to their corresponding component types
+ */
+const INTERACTION_TYPE_MAP: Record<string, string> = {
+  'Button': 'Button',
+  'StringSelectMenu': 'StringSelectMenu',
+  'UserSelectMenu': 'UserSelectMenu',
+  'RoleSelectMenu': 'RoleSelectMenu',
+  'ChannelSelectMenu': 'ChannelSelectMenu',
+  'MentionableSelectMenu': 'MentionableSelectMenu',
+  'Modal': 'Modal'
+};
+
+/**
+ * Extracts component mappings from Tessen's interactions cache
+ */
+function extractComponentMappingsFromTessen(tessen: Tessen): ComponentMapping {
+  const componentMap: ComponentMapping = {};
+
+  // Process all cached interactions from Tessen.cache.interactions
+  for (const [interactionId, cacheData] of tessen.cache.interactions) {
+    const interaction = cacheData.data;
+    
+    // Check if the interaction has a type that maps to a component
+    if (interaction && typeof interaction === 'object' && 'type' in interaction) {
+      const interactionType = (interaction as any).type;
+      const componentType = INTERACTION_TYPE_MAP[interactionType];
+      
+      if (componentType && 'id' in interaction && typeof (interaction as any).id === 'string') {
+        componentMap[(interaction as any).id] = componentType;
+      }
+    }
+  }
+
+  return componentMap;
+}
+
+/**
+ * Merges multiple component mappings into a single structure
+ */
+function mergeComponentMappings(...mappings: ComponentMapping[]): ComponentMapping {
+  const merged: ComponentMapping = {};
+
+  for (const mapping of mappings) {
+    Object.assign(merged, mapping);
+  }
+
+  return merged;
+}
+
+/**
+ * Generates TypeScript declaration for component mappings
+ */
+function generateComponentDeclaration(componentMap: ComponentMapping, clientIndex?: number): string {
+  const entries = Object.entries(componentMap);
+  
+  if (entries.length === 0) {
+    return '';
+  }
+
+  const clientSuffix = clientIndex !== undefined ? ` // Client ${clientIndex + 1}` : '';
+  const interfaceContent = entries
+    .map(([customId, componentType]) => `      '${customId}': '${componentType}';`)
+    .join('\n');
+
+  return `declare global {${clientSuffix}
+  namespace Tessen {
+    interface ComponentMap {
+${interfaceContent}
+    }
+  }
+}`;
+}
+
+/**
  * Main function to generate TypeScript declarations from multiple Tessen instances
  */
 export function generateLocalizationTypes(config: TypeGenerationConfig): string {
@@ -233,6 +318,58 @@ export function generateLocalizationTypes(config: TypeGenerationConfig): string 
   }
 
   return declarations.join('\n\n');
+}
+
+/**
+ * Main function to generate TypeScript component declarations from multiple Tessen instances
+ */
+export function generateComponentTypes(config: ComponentTypeGenerationConfig): string {
+  const declarations: string[] = [];
+
+  for (let i = 0; i < config.tessens.length; i++) {
+    const tessen = config.tessens[i];
+    const componentMap = extractComponentMappingsFromTessen(tessen);
+    const declaration = generateComponentDeclaration(componentMap, config.tessens.length > 1 ? i : undefined);
+    
+    if (declaration) {
+      declarations.push(declaration);
+    }
+  }
+
+  if (declarations.length > 0) {
+    declarations.push('export {};');
+    return declarations.join('\n\n');
+  }
+
+  return '';
+}
+
+/**
+ * Utility function to create a component type generation configuration
+ */
+export function createComponentTypeGenerationConfig(
+  tessens: Tessen | Tessen[], 
+  outputPath?: string
+): ComponentTypeGenerationConfig {
+  return {
+    tessens: Array.isArray(tessens) ? tessens : [tessens],
+    outputPath
+  };
+}
+
+/**
+ * Helper function to write generated component types to a file (Node.js environment)
+ */
+export async function writeComponentTypes(config: ComponentTypeGenerationConfig): Promise<void> {
+  const { writeFile } = await import('fs/promises');
+  const { join } = await import('path');
+  
+  const outputPath = config.outputPath || join(process.cwd(), 'components.d.ts');
+  const generatedTypes = generateComponentTypes(config);
+  
+  if (generatedTypes.trim()) {
+    await writeFile(outputPath, generatedTypes, 'utf-8');
+  }
 }
 
 /**
@@ -261,4 +398,4 @@ export async function writeLocalizationTypes(config: TypeGenerationConfig): Prom
 }
 
 // Re-export types for convenience
-export type { TypeGenerationConfig, ExtractedParameter };
+export type { TypeGenerationConfig, ExtractedParameter, ComponentTypeGenerationConfig, ComponentMapping };
